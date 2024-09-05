@@ -3,10 +3,19 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class TeacherController extends Controller
 {
+    private $serverApiKey;
+    public function __construct()
+    {
+        $this->serverApiKey = env('CLIENT_KEY');
+       
+    }
     public function teachersSection()
     {
         try{
@@ -239,14 +248,108 @@ class TeacherController extends Controller
 
     public function addGrade()
     {
-        try{
 
-            return view('web.teachers.add_grade');
-
-        }catch(\Exception $exception){
-
-            return;
+        $client = new Client();
+        $url = env('API_GETWAY_URL') . '/api/v1/grades';
+        
+        try {
+            $response = $client->get($url, [
+                'headers' => [
+                     'CLIENT-KEY' => $this->serverApiKey
+                ]
+            ]);
+            
+            if ($response->getStatusCode() == 200) {
+                $body = json_decode($response->getBody(), true);
+                if (isset($body['status']) && $body['status'] === 200) {
+                    // Store token in a secure cookie
+                    $grades = $body['data']; // Extracting grades data from response
+                    return view('web.teachers.add_grade', ['grades' => $grades]);
+                } else {
+                    return back()->with('error', $body['message']);
+                }
+            }
+        } catch (\Exception $e) {
+            
+            return back()->with('error', $e);
         }
+
+    }
+
+    public function updateGrade(Request $request)
+    {
+        
+      $client = new Client();
+        $url = env('API_GETWAY_URL') . '/api/v1/grades/' . $request->id;
+        $accessToken = $request->cookie('access_token');
+        try {
+            $response = $client->put($url, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                ],
+                'json' => [
+                    'gname' => $request->gname
+                ]
+            ]);
+            
+            if ($response->getStatusCode() == 200) {
+                $body = json_decode($response->getBody(), true);
+                
+                if (isset($body['status']) && $body['status'] === 200) {
+                   
+                    Alert::success('Success', $body['message']);
+                    return redirect()->back();
+                } else {
+                    Alert::error('Error', $body['message']);
+                    return back();
+                }
+            }
+        } catch (\Exception $e) {
+            // Log the exception if necessary
+            Log::error('Error fetching grades: '.$e->getMessage());
+
+            // Return back with just the error message, avoiding the serialization issue
+            return back()->with('error', 'An error occurred while fetching the grades. Please try again.');
+        }
+    }
+
+
+    public function deleteGrade(Request $request)
+    {
+       
+         $client = new Client();
+        $url = env('API_GETWAY_URL') . '/api/v1/grades/' . $request->id;
+        $accessToken = $request->cookie('access_token');
+        try {
+            $response = $client->delete($url, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                ],
+                'json' => [
+                    'gname' => $request->gname
+                ]
+            ]);
+            
+            if ($response->getStatusCode() == 200) {
+                $body = json_decode($response->getBody(), true);
+                
+                if (isset($body['status']) && $body['status'] === 200) {
+                   
+                    Alert::success('Success', $body['message']);
+                    return redirect()->back();
+                } else {
+                    Alert::error('Error', $body['message']);
+                    return back();
+                }
+            }
+        } catch (\Exception $e) {
+            // Log the exception if necessary
+            Log::error('Error fetching grades: '.$e->getMessage());
+
+            // Return back with just the error message, avoiding the serialization issue
+            return back()->with('error', 'An error occurred while fetching the grades. Please try again.');
+        }
+
     }
 
 

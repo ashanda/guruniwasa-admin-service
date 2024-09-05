@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class AuthController extends Controller
 {
@@ -154,6 +155,86 @@ private $serverApiKey;
             Log::error('Logout failed: ' . $e->getMessage());
             return back()->with('error', 'An error occurred while trying to log out.');
         }
+    }
+
+    public function createTeacher( Request $request){
+        $client = new Client();
+        $url = env('API_GETWAY_URL') . '/api/v1/grades';
+        
+        try {
+            $response = $client->get($url, [
+                'headers' => [
+                     'CLIENT-KEY' => $this->serverApiKey
+                ]
+            ]);
+            
+            if ($response->getStatusCode() == 200) {
+                $body = json_decode($response->getBody(), true);
+                if (isset($body['status']) && $body['status'] === 200) {
+                    // Store token in a secure cookie
+                    $grades = $body['data']; // Extracting grades data from response
+                    return view('web.auth.add-teacher', ['grades' => $grades]);
+                } else {
+                    return back()->with('error', $body['message']);
+                }
+            }
+        } catch (\Exception $e) {
+            
+            return back()->with('error', $e);
+        } 
+    }
+
+    public function addTeacher(Request $request){
+        
+        $client = new Client();
+        $url = env('API_GETWAY_URL') . '/api/v1/register-teacher';
+        $accessToken = $request->cookie('access_token');
+        //try {
+            // Make POST request to API endpoint
+            $response = $client->post($url, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $accessToken,
+                    
+                ],
+                'form_params' => [
+                        'name' => $request->full_name,
+                        'grades' => $request->gradeList,
+                        'address' => $request->address,
+                        'district' => $request->district,
+                        'town' =>$request->town,
+                        'contact_no' => $request->contact_no,
+                        'secondary_contact_no' => $request->secondary_contact_no,
+                        'email' => $request->email,
+                        'password' => $request->password,
+                ]
+            ]);
+
+            if ($response->getStatusCode() == 200) {
+                $body = json_decode($response->getBody(), true);
+                
+                if (isset($body['status']) && $body['status'] === 201) {
+                    $body = json_decode($response->getBody(), true);
+                
+                    if (isset($body['status']) && $body['status'] === 201) {
+                        Alert::success('Success', $body['message']);
+                        return redirect()->route('web.teachers.our_teacher');
+                    }else{
+                        Alert::error('Error', 'Something went wrong with the request');
+                        return back();
+                    }
+                } else {
+                
+                    return back()->with('error', $body['message']);
+                }
+            } else {
+               Alert::error('Error', 'Something went wrong with the request');
+               return back();
+                
+            }
+        // } catch (\Exception $e) {
+        //     Alert::error('Error', $e->getMessage());
+        //     return back();
+        // }
     }
 
 

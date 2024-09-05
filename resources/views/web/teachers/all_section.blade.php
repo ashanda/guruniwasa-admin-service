@@ -3,7 +3,7 @@
 <div class="container-fluid">
    <div class="row align-items-center pt-2">
       <div class="col-lg-3 col-sm-3">
-         <a href="/"  class="hvr-icon-back text-uppercase font-13 fw-bold text-purple">
+         <a href="{{ route('web.home') }}"  class="hvr-icon-back text-uppercase font-13 fw-bold text-purple">
          <i class="fa-regular fa-circle-left hvr-icon"></i>
          BACK TO HOME
          </a>
@@ -110,7 +110,16 @@
          <div class="col-lg-3 col-sm-3 mb-3 align-items-center text-center">
             <a href="{{ route('web.teachers.add_grade') }}" class="hvr-shrink w-100  ">
                <div class="alert alert-info align-items-center card-1 position-relative custom-alert" role="alert">
-                  <p class="font-16 text-uppercase fw-bold text-dark py-3 mb-0">ADD GRADES & SUBJECTS
+                  <p class="font-16 text-uppercase fw-bold text-dark py-3 mb-0">ADD GRADES 
+
+                  </p>
+               </div>
+            </a>
+         </div>
+         <div class="col-lg-3 col-sm-3 mb-3 align-items-center text-center">
+            <a href="{{ route('web.teachers.add_grade') }}" class="hvr-shrink w-100  ">
+               <div class="alert alert-info align-items-center card-1 position-relative custom-alert" role="alert">
+                  <p class="font-16 text-uppercase fw-bold text-dark py-3 mb-0">ADD SUBJECTS
 
                   </p>
                </div>
