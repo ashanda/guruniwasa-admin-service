@@ -53,15 +53,21 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('web.logout');
 
 
 // Fees
+// Fees
 Route::get('/fees/view', [FeesController::class, 'feesView'])->name('web.fees.view');
 Route::get('/fees/class-pending', [FeesController::class, 'feesClassPending'])->name('web.fees.class_pending');
 Route::get('/fees/class-fees', [FeesController::class, 'classFees'])->name('web.fees.class_fess');
 
 Route::get('/fees/cash', [FeesController::class, 'classFeesCash'])->name('web.fees.class_fess_cash');
 Route::get('/fees/pos', [FeesController::class, 'classFeesPos'])->name('web.fees.class_fess_Pos');
+
+Route::get('/fees/monthly-card-payment', [FeesController::class, 'classFeesMonthlyCardPayment'])->name('web.fees.class_fees_monthly_card_payment');
 Route::get('/fees/card-payment', [FeesController::class, 'classFeesCardPayment'])->name('web.fees.class_fess_card_payment');
 Route::get('/fees/error-payment', [FeesController::class, 'classFeesErrorPayment'])->name('web.fees.class_fess_error_payment');
+
+Route::get('/fees/monthly-bank-payment', [FeesController::class, 'classFeesMonthlyBankPayment'])->name('web.fees.class_fees_monthly_bank_payment');
 Route::get('/fees/bank-payment', [FeesController::class, 'classFeesBankPayment'])->name('web.fees.class_fess_bank_payment');
+
 Route::get('/fees/payment-history', [FeesController::class, 'paymentHistory'])->name('web.fees.payment_history');
 
 
@@ -193,6 +199,9 @@ Route::get('/schedule-class', [TeacherController::class, 'scheduleClass'])->name
 Route::get('/schedule-class-view', [TeacherController::class, 'scheduleClassView'])->name('web.teachers.schedule_class_view');
 
 Route::get('/add-grade', [TeacherController::class, 'addGrade'])->name('web.teachers.add_grade');
+Route::post('/update-grade/{id}', [TeacherController::class, 'updateGrade'])->name('grades.update');
+Route::delete('/delete-grade', [TeacherController::class, 'deleteGrade'])->name('grades.destroy');    
+
 Route::get('/add-subject', [TeacherController::class, 'addSubject'])->name('web.teachers.add_subject');
 
 
@@ -240,5 +249,11 @@ Route::get('/grade-requests', [StudentApprovalController::class, 'gradeRequests'
 ->name('web.student_approvals.grade_requests');
 Route::get('/free-requests', [StudentApprovalController::class, 'freeRequests'])
 ->name('web.student_approvals.free_requests');
+
+Route::get('/create-teacher', [AuthController::class, 'createTeacher'])
+->name('web.teachers.create');
+
+Route::post('/add-teacher', [AuthController::class, 'addTeacher'])->name('web.teachers.add');
+
 
 });

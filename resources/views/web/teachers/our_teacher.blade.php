@@ -14,12 +14,21 @@
          </h1>
         
       </div>
-      <div class="col-lg-3 col-sm-3 pt-lg-0 pt-3 text-end">
+      
+      {{-- <div class="col-lg-3 col-sm-3 pt-lg-0 pt-3 text-end">
          <i class="fa-solid fa-file-excel fs-2 text-success mb-2 hvr-grow"></i>
          <span class=" text-uppercase font-13 fw-bold text-dark"> Download excel</span>
+      </div> --}}
+      <div class="row justify-content-end pt-2">
+                  <div class="col-lg-4">
+      
+      <a href="{{ route('web.teachers.create') }}"  class="d-flex justify-content-center font-14 text-white 
+                           my-1 py-2 px-3 bg-dark fw-500 align-items-center  rounded-pill" > + Add Teacher </a>
+      </div>
       </div>
    </div>
 </div>
+
 <div class="container-fluid py-lg-5 py-3 px-lg-5 ">
    <div class="row middle-hight">
       <div class="col-12">
